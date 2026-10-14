@@ -1,0 +1,30 @@
+node_modules/
+lib/
+tests/build/
+*.tsbuildinfo
+*.tgz
+*.egg-info/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+jupyterlab_cell_studio/labextension/
+.DS_Store
+
+# Yarn files (npm is used for release builds)
+.yarn/
+.yarnrc.yml
+yarn.lock
+.pnp.*
+
+# Local environments and private configuration
+.venv/
+venv/
+.env
+.env.*
+.npmrc
+.pypirc
+
+# Local notebook testing
+/Untitled.ipynb
+.ipynb_checkpoints/

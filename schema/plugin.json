@@ -1,0 +1,20 @@
+{
+  "jupyter.lab.setting-icon-label": "Cell Studio",
+  "title": "Cell Studio",
+  "description": "Local-only notebook debugger and workflow settings.",
+  "type": "object",
+  "properties": {
+    "pauseAtFirstLine": {
+      "title": "Add a breakpoint on first executable line when none exist",
+      "description": "An explicit Debug Cell click adds a breakpoint if the cell has none.",
+      "type": "boolean",
+      "default": true
+    },
+    "showDurations": {
+      "title": "Show execution durations",
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

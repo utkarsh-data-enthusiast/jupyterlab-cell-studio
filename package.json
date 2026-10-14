@@ -1,0 +1,105 @@
+{
+  "name": "@patriotever/jupyterlab-cell-studio",
+  "version": "0.1.0",
+  "description": "Privacy-first per-cell JupyterLab debugger and notebook workflow enhancements",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension",
+    "debugger",
+    "notebook",
+    "privacy"
+  ],
+  "homepage": "https://github.com/utkarsh-data-enthusiast/jupyterlab-cell-studio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utkarsh-data-enthusiast/jupyterlab-cell-studio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/utkarsh-data-enthusiast/jupyterlab-cell-studio/issues"
+  },
+  "license": "MIT",
+  "author": "PatriotEver Lab contributors",
+  "files": [
+    "lib/",
+    "style/",
+    "schema/",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "scripts": {
+    "build": "tsc -b && jupyter-builder build .",
+    "build:lib": "tsc -b",
+    "clean": "rimraf lib tsconfig.tsbuildinfo",
+    "test:sections": "tsc -p tsconfig.pure.json && node --test tests/sections.test.cjs",
+    "check": "tsc --noEmit --composite false --incremental false",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "@jupyter/builder": "^1.2.3",
+    "@jupyterlab/application": "^4.5.0",
+    "@jupyterlab/apputils": "^4.5.0",
+    "@jupyterlab/cells": "^4.5.0",
+    "@jupyterlab/debugger": "^4.5.0",
+    "@jupyterlab/notebook": "^4.5.0",
+    "@jupyterlab/settingregistry": "^4.5.0",
+    "rimraf": "^6.0.1",
+    "typescript": "~5.8.3"
+  },
+  "peerDependencies": {
+    "@jupyterlab/application": "^4.5.0",
+    "@jupyterlab/apputils": "^4.5.0",
+    "@jupyterlab/cells": "^4.5.0",
+    "@jupyterlab/debugger": "^4.5.0",
+    "@jupyterlab/notebook": "^4.5.0",
+    "@jupyterlab/settingregistry": "^4.5.0"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "jupyterlab_cell_studio/labextension",
+    "schemaDir": "schema",
+    "sharedPackages": {
+      "@jupyterlab/application": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyterlab/apputils": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyterlab/cells": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyterlab/debugger": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyterlab/notebook": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyterlab/settingregistry": {
+        "bundled": false,
+        "singleton": true
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^4.5.0",
+    "@jupyterlab/apputils": "^4.5.0",
+    "@jupyterlab/cells": "^4.5.0",
+    "@jupyterlab/debugger": "^4.5.0",
+    "@jupyterlab/notebook": "^4.5.0",
+    "@jupyterlab/settingregistry": "^4.5.0"
+  }
+}
