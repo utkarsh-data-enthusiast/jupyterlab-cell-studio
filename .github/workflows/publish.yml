@@ -1,59 +1,69 @@
-name: CI
+name: Publish Cell Studio to PyPI
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build-and-test:
+  build:
+    name: Build and verify distributions
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.11', '3.13']
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '22'
+          python-version: "3.12"
 
-      - uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          node-version: "24"
 
-      - name: Install dependencies
+      - name: Install build tools
         run: |
-          npm install --no-fund
-          python -m pip install "jupyter-builder>=1.0.0"
+          python -m pip install --upgrade pip
+          python -m pip install build twine
 
-      - name: Run section tests
-        run: npm run test:sections
+      - name: Build distributions
+        run: |
+          python -m build
 
-      - name: Static privacy and packaging checks
-        run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Verify distributions
+        run: |
+          python -m twine check dist/*
 
-      - name: Type check
-        run: npm run check
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Build wheel
-        run: python -m pip wheel . --no-deps -w dist
-
-      - name: Check wheel content
-        run: python tests/verify_wheel.py
-
-      - name: Upload wheel
-        if: matrix.python-version == '3.11'
+      - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
-          name: jupyterlab-cell-studio-wheel
-          path: dist/*.whl
+          name: python-distributions
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/project/jupyterlab-cell-studio/
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download verified distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
+
+      - name: Publish using Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
