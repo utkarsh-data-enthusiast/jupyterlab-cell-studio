@@ -1,39 +1,56 @@
 name: CI
+
 on:
   push:
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         python-version: ['3.11', '3.13']
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
-        run: npm install --no-fund
+        run: |
+          npm install --no-fund
+          python -m pip install "jupyter-builder>=1.0.0"
+
       - name: Run section tests
         run: npm run test:sections
+
       - name: Static privacy and packaging checks
         run: python -m unittest discover -s tests -p "test_*.py"
+
       - name: Type check
         run: npm run check
+
       - name: Build frontend
         run: npm run build
+
       - name: Build wheel
         run: python -m pip wheel . --no-deps -w dist
+
       - name: Check wheel content
         run: python tests/verify_wheel.py
+
       - name: Upload wheel
         if: matrix.python-version == '3.11'
         uses: actions/upload-artifact@v4
