@@ -1,43 +1,660 @@
-.pcl-toolbar {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 2px 8px;
-  min-height: 29px;
-  background: var(--jp-layout-color1);
-  color: var(--jp-ui-font-color1);
-  border-bottom: 1px solid var(--jp-border-color2);
-  font: 12px var(--jp-ui-font-family);
-}
-.pcl-toolbar .pcl-action,.pcl-more summary {
-  border: 1px solid var(--jp-border-color2);
-  background: var(--jp-layout-color2);
-  color: var(--jp-ui-font-color1);
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 3px 7px;
-  font: inherit;
-}
-.pcl-toolbar .pcl-action:hover,.pcl-more summary:hover { background: var(--jp-layout-color3); }
-.pcl-toolbar .pcl-action:focus-visible,.pcl-more summary:focus-visible { outline: 2px solid var(--jp-brand-color1); }
-.pcl-toolbar .pcl-elapsed { font-variant-numeric: tabular-nums; color: var(--jp-ui-font-color2); min-width: 32px; text-align: right; }
-.pcl-more { position: relative; z-index: 50; }
-.pcl-more summary { list-style: none; user-select: none; }
-.pcl-more summary::-webkit-details-marker { display: none; }
-.pcl-more .pcl-menu {
-  position: absolute;
-  top: 100%; right: 0;
-  width: max-content; max-width: 270px;
-  padding: 5px;
-  display: grid; gap: 3px;
-  box-shadow: var(--jp-elevation-z6);
-  border: 1px solid var(--jp-border-color2);
-  background: var(--jp-layout-color1);
-  border-radius: 6px;
-}
-.pcl-more .pcl-menu .pcl-action { text-align: left; }
+/*
+ * ============================================================
+ * PatriotEver Cell Studio for JupyterLab 4
+ * ============================================================
+ *
+ * Copyright (c) PatriotEver Lab
+ * License: MIT
+ *
+ * Features:
+ * - Single horizontal floating debugger toolbar
+ * - Compact debugger buttons
+ * - SQL cell styling
+ * - JupyterLab light and dark theme compatibility
+ * - Responsive horizontal scrolling
+ *
+ * Privacy:
+ * - No external stylesheets
+ * - No remote fonts
+ * - No tracking
+ * - No advertisements
+ *
+ * ============================================================
+ */
 
-body[data-pcl-show-durations="false"] .pcl-elapsed { display: none; }
+
+/* ============================================================
+   FLOATING TOOLBAR CONTAINER
+   ============================================================ */
+
+.pcl-floating-strip {
+
+  box-sizing: border-box;
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 100;
+
+  display: flex;
+
+  flex-direction: row;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  flex-wrap: nowrap;
+
+  gap: 5px;
+
+  width: 100%;
+
+  max-width: 100%;
+
+  min-height: 39px;
+
+  padding: 5px 8px;
+
+  margin: 0 0 8px 0;
+
+  overflow-x: auto;
+
+  overflow-y: hidden;
+
+  background: var(--jp-layout-color1);
+
+  color: var(--jp-ui-font-color1);
+
+  border: 1px solid var(--jp-border-color2);
+
+  border-radius: 9px;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+
+  font-family: var(--jp-ui-font-family);
+
+  font-size: 12px;
+
+  line-height: 1.4;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    var(--jp-border-color2)
+    transparent;
+
+}
+
+
+/* ============================================================
+   KEEP ALL TOOLBAR ELEMENTS HORIZONTAL
+   ============================================================ */
+
+.pcl-floating-strip > * {
+
+  flex-shrink: 0;
+
+}
+
+
+.pcl-floating-strip button {
+
+  flex-shrink: 0;
+
+}
+
+
+.pcl-floating-strip select {
+
+  flex-shrink: 0;
+
+}
+
+
+/* ============================================================
+   FLOATING DEBUGGER BUTTONS
+   ============================================================ */
+
+.pcl-floating-action {
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+
+  flex-direction: row;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  min-width: 30px;
+
+  height: 29px;
+
+  padding: 3px 7px;
+
+  margin: 0;
+
+  border: 1px solid var(--jp-border-color2);
+
+  border-radius: 6px;
+
+  background: var(--jp-layout-color2);
+
+  color: var(--jp-ui-font-color1);
+
+  font-family: var(--jp-ui-font-family);
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    opacity 120ms ease;
+
+}
+
+
+/* ============================================================
+   HOVER STATE
+   ============================================================ */
+
+.pcl-floating-action:hover:not(:disabled) {
+
+  background: var(--jp-layout-color3);
+
+  border-color: var(--jp-border-color1);
+
+}
+
+
+/* ============================================================
+   ACTIVE BUTTON STATE
+   ============================================================ */
+
+.pcl-floating-action:active:not(:disabled) {
+
+  background: var(--jp-layout-color4);
+
+  transform: translateY(1px);
+
+}
+
+
+/* ============================================================
+   KEYBOARD FOCUS
+   ============================================================ */
+
+.pcl-floating-action:focus-visible {
+
+  outline: 2px solid var(--jp-brand-color1);
+
+  outline-offset: 2px;
+
+}
+
+
+/* ============================================================
+   DISABLED DEBUGGER BUTTONS
+   ============================================================ */
+
+.pcl-floating-action:disabled {
+
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  pointer-events: none;
+
+}
+
+
+/* ============================================================
+   RUN BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="run"] {
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   DEBUG BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="debug"] {
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   BREAKPOINT BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="breakpoint"] {
+
+  color: var(--jp-error-color1);
+
+}
+
+
+/* ============================================================
+   CONTINUE BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="continue"]:not(:disabled) {
+
+  color: var(--jp-success-color1);
+
+}
+
+
+/* ============================================================
+   STOP DEBUGGER BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="stopDebug"]:not(:disabled) {
+
+  color: var(--jp-error-color1);
+
+}
+
+
+/* ============================================================
+   INTERRUPT KERNEL BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="interrupt"] {
+
+  font-weight: 600;
+
+}
+
+
+/* ============================================================
+   SQL CELL BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="sqlCell"] {
+
+  color: var(--jp-brand-color1);
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   MYSQL CONNECTION BUTTON
+   ============================================================ */
+
+.pcl-floating-action[data-pcl-action="sqlConnect"] {
+
+  color: var(--jp-brand-color1);
+
+}
+
+
+/* ============================================================
+   MORE ACTIONS MENU
+   ============================================================ */
+
+.pcl-floating-strip select {
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  height: 29px;
+
+  min-width: 70px;
+
+  padding: 3px 7px;
+
+  margin: 0;
+
+  border: 1px solid var(--jp-border-color2);
+
+  border-radius: 6px;
+
+  background: var(--jp-layout-color2);
+
+  color: var(--jp-ui-font-color1);
+
+  font-family: var(--jp-ui-font-family);
+
+  font-size: 12px;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+}
+
+
+/* ============================================================
+   MORE MENU HOVER
+   ============================================================ */
+
+.pcl-floating-strip select:hover {
+
+  background: var(--jp-layout-color3);
+
+}
+
+
+/* ============================================================
+   MORE MENU KEYBOARD FOCUS
+   ============================================================ */
+
+.pcl-floating-strip select:focus-visible {
+
+  outline: 2px solid var(--jp-brand-color1);
+
+  outline-offset: 2px;
+
+}
+
+
+/* ============================================================
+   EXECUTION DURATION
+   ============================================================ */
+
+.pcl-floating-elapsed {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  flex: 0 0 auto;
+
+  min-width: 32px;
+
+  margin-left: 4px;
+
+  color: var(--jp-ui-font-color2);
+
+  font-family: var(--jp-code-font-family);
+
+  font-size: 11px;
+
+  font-variant-numeric: tabular-nums;
+
+  white-space: nowrap;
+
+}
+
+
+/* ============================================================
+   HIDE EXECUTION DURATION WHEN DISABLED
+   ============================================================ */
+
+body[data-pcl-show-durations="false"]
+.pcl-floating-elapsed {
+
+  display: none;
+
+}
+
+
+/* ============================================================
+   SQL CELL APPEARANCE
+   ============================================================ */
+
+/*
+ * SQL cells remain normal Jupyter notebook code cells.
+ *
+ * The standalone executor handles SQL execution.
+ *
+ * CSS only identifies SQL cells visually.
+ */
+
+.pcl-sql-cell {
+
+  position: relative;
+
+}
+
+
+/* ============================================================
+   SQL CELL LEFT ACCENT
+   ============================================================ */
+
+.pcl-sql-cell .jp-Cell-inputWrapper {
+
+  border-left: 3px solid var(--jp-brand-color1);
+
+}
+
+
+/* ============================================================
+   SQL EDITOR
+   ============================================================ */
+
+.pcl-sql-cell .cm-editor {
+
+  font-family: var(--jp-code-font-family);
+
+}
+
+
+/* ============================================================
+   SQL OUTPUT
+   ============================================================ */
+
+.pcl-sql-cell .jp-OutputArea {
+
+  margin-top: 4px;
+
+}
+
+
+/* ============================================================
+   SQL OUTPUT TABLES
+   ============================================================ */
+
+.pcl-sql-cell .jp-OutputArea-output table {
+
+  border-collapse: collapse;
+
+  max-width: 100%;
+
+}
+
+
+/* ============================================================
+   SQL OUTPUT TABLE HEADERS
+   ============================================================ */
+
+.pcl-sql-cell .jp-OutputArea-output th {
+
+  font-weight: 600;
+
+}
+
+
+/* ============================================================
+   SQL OUTPUT TABLE CELLS
+   ============================================================ */
+
+.pcl-sql-cell .jp-OutputArea-output td,
+.pcl-sql-cell .jp-OutputArea-output th {
+
+  padding: 4px 8px;
+
+  border-bottom: 1px solid var(--jp-border-color2);
+
+}
+
+
+/* ============================================================
+   JUPYTERLAB NOTEBOOK COMPATIBILITY
+   ============================================================ */
+
+/*
+ * The floating toolbar is inserted once per notebook.
+ *
+ * Prevent its buttons from expanding vertically.
+ */
+
+.jp-Notebook .pcl-floating-strip {
+
+  flex-direction: row;
+
+  flex-wrap: nowrap;
+
+  align-items: center;
+
+}
+
+
+/* ============================================================
+   PREVENT BUTTONS FROM STRETCHING
+   ============================================================ */
+
+.jp-Notebook .pcl-floating-action {
+
+  width: auto;
+
+  max-width: none;
+
+  align-self: center;
+
+}
+
+
+/* ============================================================
+   NARROW NOTEBOOK WINDOWS
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  .pcl-floating-strip {
+
+    gap: 4px;
+
+    padding: 4px 6px;
+
+  }
+
+  .pcl-floating-action {
+
+    min-width: 28px;
+
+    height: 28px;
+
+    padding: 3px 6px;
+
+  }
+
+}
+
+
+/* ============================================================
+   SMALL WINDOWS
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+  .pcl-floating-strip {
+
+    gap: 3px;
+
+    min-height: 35px;
+
+    padding: 3px 5px;
+
+  }
+
+  .pcl-floating-action {
+
+    min-width: 27px;
+
+    height: 27px;
+
+    padding: 2px 5px;
+
+    font-size: 11px;
+
+  }
+
+  .pcl-floating-strip select {
+
+    height: 27px;
+
+    font-size: 11px;
+
+  }
+
+}
+
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+.pcl-floating-strip::-webkit-scrollbar {
+
+  height: 5px;
+
+}
+
+
+.pcl-floating-strip::-webkit-scrollbar-track {
+
+  background: transparent;
+
+}
+
+
+.pcl-floating-strip::-webkit-scrollbar-thumb {
+
+  background: var(--jp-border-color2);
+
+  border-radius: 5px;
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pcl-floating-action {
+
+    transition: none;
+
+  }
+
+}
+
+
+/* ============================================================
+   END OF PATRIOTEVER CELL STUDIO STYLES
+   ============================================================ */
